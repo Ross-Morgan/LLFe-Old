@@ -1,7 +1,7 @@
 use llfe::prelude::{
     Lexer,
     Parser,
-    Compiler,
+    Transpiler,
 };
 
 fn main() {
