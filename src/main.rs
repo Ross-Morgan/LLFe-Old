@@ -1,4 +1,4 @@
-use llfe::{
+use llfe::prelude::{
     Lexer,
     Parser,
     Compiler,
