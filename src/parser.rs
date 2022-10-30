@@ -1,7 +1,7 @@
-trait Token {}
+pub(crate) trait Token {}
 
 pub struct Parser<'a> {
-    tokens: Vec<&'a mut dyn Token>
+    pub(crate) tokens: Vec<&'a mut dyn Token>
 }
 
 impl Parser<'_> {
