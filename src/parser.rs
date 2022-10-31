@@ -1,11 +1,17 @@
-pub(crate) trait Token {}
+use crate::ast;
 
-pub struct Parser<'a> {
-    pub(crate) tokens: Vec<&'a mut dyn Token>
-}
+type Tokens = Vec<crate::token::Token>;
 
-impl Parser<'_> {
-    pub fn new() -> Self {
-        Self { tokens: vec![] }
+pub struct Parser(pub(crate) Tokens);
+
+
+impl Parser {
+    pub fn parse(&self) -> ast::AST {
+        //TODO Implement parser
+        let mut tree = ast::AST::new();
+
+        tree.push(ast::nodes::Node::Node);
+
+        tree
     }
 }
