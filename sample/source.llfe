@@ -1,0 +1,12 @@
+global <entry-point>
+
+max:
+    
+
+min:
+    nop
+
+entry-point:
+    load 10, 20
+    run max
+    run min
