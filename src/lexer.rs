@@ -1,6 +1,7 @@
 use std::fs;
 use std::io;
 
+use crate::error::LLFeError;
 use crate::token::Token;
 
 
@@ -24,7 +25,7 @@ impl Lexer {
 
 
 impl Lexer {
-    pub fn lex(&self) -> Tokens {
+    pub fn lex(&self) -> Result<Tokens, LLFeError> {
         //TODO Implement lexer
 
         vec![]
