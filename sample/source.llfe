@@ -1,12 +1,11 @@
-global <entry-point>
+global <entrypoint>
 
-max:
-    
+entrypoint:
+    mode write
+    load r1
 
-min:
-    nop
+    mode read
 
-entry-point:
-    load 10, 20
-    run max
-    run min
+
+    mode exit
+    load r1 0x0
