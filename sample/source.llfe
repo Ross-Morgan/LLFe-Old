@@ -1,0 +1,7 @@
+global <entrypoint>
+
+entrypoint:
+    mode write
+    load r1
+
+    mode read
