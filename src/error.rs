@@ -1,36 +1,31 @@
 use std::fmt;
 
 
+pub fn new_error(name: &'static str) {}
+
+
 #[derive(Clone, Debug)]
 pub enum LLFeError {
-    NO_ERROR,
-    ERROR(ErrorData<"Error">),
-    LEXER(ErrorData<"Lexer">),
-    PARSER(ErrorData<"Parser">),
-    TRANSPILER(ErrorData<"Transpiler">),
-    INTERPRETER(ErrorData<"Interpreter">),
+    NOERROR,
+    ERROR(ErrorData),
+    LEXER(ErrorData),
+    PARSER(ErrorData),
+    TRANSPILER(ErrorData),
+    INTERPRETER(ErrorData),
 }
 
 
-pub struct ErrorData<const S: &'static str> {
-    pub description: String
-    pub caused_by: Option<LLFeError>
-}
-
-
-impl<const S: &'static str> fmt::Debug for ErrorData<S> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("ErrorData")
-         .field("type", S.clone())
-         .field("desc", &self.description)
-         .field("caused by", &self.caused_by.unwrap_or(LLFeError::NO_ERROR))
-         .finish()
-    }
+#[derive(Debug)]
+pub struct ErrorData {
+    pub name: String,
+    pub description: String,
+    pub caused_by: Option<LLFeError>,
 }
 
 impl Default for ErrorData {
     fn default() -> Self {
         Self {
+            name: "Error".to_string(),
             description: String::new(),
             caused_by: None
         }
