@@ -1,11 +1,13 @@
-global <entrypoint>
+data:
+    mode: 1
 
-entrypoint:
-    mode write
+
+entry:
+    mode =write
     load r1
 
-    mode read
+    mode =read
 
 
-    mode exit
-    load r1 0x0
+exit:
+    mode =exit_mode

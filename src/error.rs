@@ -1,9 +1,3 @@
-use std::fmt;
-
-
-pub fn new_error(name: &'static str) {}
-
-
 #[derive(Clone, Debug)]
 pub enum LLFeError {
     NOERROR,
@@ -15,11 +9,11 @@ pub enum LLFeError {
 }
 
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct ErrorData {
     pub name: String,
     pub description: String,
-    pub caused_by: Option<LLFeError>,
+    pub caused_by: Box<Option<LLFeError>>,
 }
 
 impl Default for ErrorData {
@@ -27,7 +21,7 @@ impl Default for ErrorData {
         Self {
             name: "Error".to_string(),
             description: String::new(),
-            caused_by: None
+            caused_by: Box::new(None)
         }
     }
 }
