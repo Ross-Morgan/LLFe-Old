@@ -11,9 +11,8 @@ fn main() {
 
     let mut contents = vec![];
 
-    let x = lexer.find_section_contents(&vec![], &mut contents);
+    lexer.find_section_contents(&vec![], &mut contents);
 
     println!("---");
-    println!("{:?}", x);
     println!("---");
 }
