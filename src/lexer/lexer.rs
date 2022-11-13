@@ -117,6 +117,8 @@ impl Lexer {
         // Check for invalid headers
         super::checks::are_headers_valid(&headers)?;
 
+        //
+
         Ok(())
     }
 }
