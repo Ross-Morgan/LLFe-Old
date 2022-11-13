@@ -11,3 +11,10 @@ entry:
 
 exit:
     mode =exit_mode
+
+
+max:
+    load r0 0x10
+    load r1 0x20
+
+    // Find max
