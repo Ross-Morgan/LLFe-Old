@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs;
 
 use lazy_static::lazy_static;
@@ -7,9 +8,7 @@ use crate::error::{ErrorData, LLFeError};
 use crate::Tokens;
 
 lazy_static! {
-    static ref SECTION_PATTERN: Regex = Regex::new(r"(?gm)
-    ^\w+:$
-    ").unwrap();
+    static ref SECTION_PATTERN: Regex = Regex::new(r"^\w+:$").unwrap();
 }
 
 
@@ -46,12 +45,13 @@ impl Lexer {
 impl Lexer {
     pub fn lex(&self) -> Result<Tokens, LLFeError> {
         //TODO Implement lexer
+        #[allow(unused_mut)]
         let mut tokens = vec![];
 
         let mut section_headers: Vec<String> = vec![];
         let mut section_contents: Vec<String> = vec![];
 
-        self.find_section_headers(&mut section_headers);
+        self.find_section_headers(&mut section_headers)?;
         self.find_section_contents(&section_headers, &mut section_contents)?;
 
         Ok(tokens)
@@ -83,10 +83,16 @@ impl Lexer {
     }
 
     pub fn find_section_contents(&self, names: &Vec<String>, contents: &mut Vec<String>) -> Result<(), LLFeError> {
-        let names = names.iter();
+        if contents.len() < names.len() {
+            unsafe { contents.set_len(names.len()); }
+        }
+
+        contents.fill(String::new());
+
+        let mut names = names.iter();
 
         // Split source into lines
-        let mut source_lines = self.0
+        let source_lines = self.0
             .split("\n")
             .map(|s| s.trim_end().to_string())
             .collect::<Vec<String>>();
@@ -107,17 +113,19 @@ impl Lexer {
 
             for (i, line_is_header) in possible_header_lines.into_iter().enumerate() {
                 if line_is_header {
-                    v.push(source_lines.get(i).clone().unwrap());
+                    v.push(source_lines.get(i).unwrap());
                 }
             }
 
             v
         };
 
-        // Check for invalid headers
         super::checks::are_headers_valid(&headers)?;
+        super::checks::does_entry_header_exist(&headers)?;
 
-        //
+        let source = self.0.clone();
+
+        let mut sections = HashMap::<String, String>::new();
 
         Ok(())
     }
