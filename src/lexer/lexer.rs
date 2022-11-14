@@ -44,8 +44,6 @@ impl Lexer {
 
 impl Lexer {
     pub fn lex(&self) -> Result<Tokens, LLFeError> {
-        //TODO Implement lexer
-        #[allow(unused_mut)]
         let mut tokens = vec![];
 
         let mut section_headers: Vec<String> = vec![];
@@ -83,29 +81,9 @@ impl Lexer {
     }
 
     pub fn find_section_contents(&self, names: &Vec<String>, contents: &mut Vec<String>) -> Result<(), LLFeError> {
-        if contents.len() < names.len() {
-            unsafe { contents.set_len(names.len()); }
-        }
+        fill_vec(contents, names.len(), String::new);
 
-        contents.fill(String::new());
-
-        let mut names = names.iter();
-
-        // Split source into lines
-        let source_lines = self.0
-            .split("\n")
-            .map(|s| s.trim_end().to_string())
-            .collect::<Vec<String>>();
-
-        // Check if lines can be headers
-        let possible_header_lines = source_lines
-            .iter()
-            .map(|s| {
-                let trimmed = s.trim_start();
-
-                (trimmed == s.as_str()) && (trimmed != "")
-            })
-            .collect::<Vec<bool>>();
+        let possible_header_lines = self.possible_header_lines();
 
         // Extract header lines
         let headers = {
@@ -113,7 +91,7 @@ impl Lexer {
 
             for (i, line_is_header) in possible_header_lines.into_iter().enumerate() {
                 if line_is_header {
-                    v.push(source_lines.get(i).unwrap());
+                    v.push(self.nth_line(i).unwrap());
                 }
             }
 
@@ -123,10 +101,83 @@ impl Lexer {
         super::checks::are_headers_valid(&headers)?;
         super::checks::does_entry_header_exist(&headers)?;
 
-        let source = self.0.clone();
-
         let mut sections = HashMap::<String, String>::new();
+
+        // Find whitespace characters at start of line
+        // Find regularity in whitespace (0 or n)
+        // Each chunk of lines starting with whitespace is a section
+
+        let whitespace_at_start_of_line = self.0
+            .replace("\r", "")
+            .split("\n")
+            .map(|s| {
+                // Empty lines count as whitespace
+                if s == "" { return true; }
+
+                // Check if first character is whitespace
+                s.chars().nth(0).unwrap().is_ascii_whitespace()
+            })
+            .collect::<Vec<bool>>();
+
+        println!("{whitespace_at_start_of_line:?}");
+
+        let mut section_buffer = String::new();
+        let mut collecting_section_name = String::new();
+
+        for (i, has_whitespace) in whitespace_at_start_of_line.into_iter().enumerate() {
+            // Reached new section
+            match has_whitespace {
+                true => {}
+                false => {
+                    // If anything was collected and a section name exists, add section contents with name
+                    if !section_buffer.is_empty() && collecting_section_name != "" {
+                        sections.insert(collecting_section_name.clone(), section_buffer.clone());
+                    }
+
+                    collecting_section_name = self.nth_line(i).unwrap();
+                }
+            }
+        }
 
         Ok(())
     }
+}
+
+impl Lexer {
+    pub fn possible_header_lines(&self) -> Vec<bool> {
+        self.0.clone()
+            .split("\n")
+            .map(str::trim_end)
+            .map(|s| {
+                let trimmed = s.trim_start();
+
+                (trimmed == s) && (trimmed != "")
+            })
+            .collect::<Vec<bool>>()
+    }
+
+    pub fn nth_line(&self, i: usize) -> Option<String> {
+        self.0.clone()
+            .split("\n")
+            .map(|s| s.trim_end().to_string())
+            .nth(i)
+    }
+}
+
+
+fn fill_vec<T>(v: &mut Vec<T>, n: usize, p: fn() -> T) {
+    v.clear();
+
+    unsafe { v.set_len(n); }
+
+    for _ in 0..n {
+        v.push(p());
+    }
+}
+
+
+fn longest_identical_subsequence_of<T>(vec: &Vec<T>, val: T) -> (usize, usize) {
+    let mut longest: usize; 
+
+    (0, 0)
 }
