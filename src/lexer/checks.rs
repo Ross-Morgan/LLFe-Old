@@ -7,7 +7,7 @@ lazy_static! {
     static ref HEADER_PATTERN: Regex = Regex::new(r"^[a-z_]+:$").unwrap();
 }
 
-pub fn are_headers_valid(headers: &Vec<&String>) -> Result<(), LLFeError> {
+pub fn are_headers_valid(headers: &Vec<String>) -> Result<(), LLFeError> {
     for header in headers {
         if !HEADER_PATTERN.is_match(header.as_str()) {
             return Err(LLFeError::LEXER(ErrorData {
@@ -21,8 +21,8 @@ pub fn are_headers_valid(headers: &Vec<&String>) -> Result<(), LLFeError> {
      Ok(())
 }
 
-pub fn does_entry_header_exist(headers: &Vec<&String>) -> Result<(), LLFeError> {
-    let pos = headers.iter().position(|&x| x == "entry:");
+pub fn does_entry_header_exist(headers: &Vec<String>) -> Result<(), LLFeError> {
+    let pos = headers.iter().position(|x| x == "entry:");
 
     if pos.is_none() {
         return Err(LLFeError::LEXER(ErrorData {
