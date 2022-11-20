@@ -4,30 +4,25 @@ use regex::Regex;
 use crate::error::{ErrorData, LLFeError};
 
 lazy_static! {
-    static ref SECTION_PATTERN: Regex = Regex::new(r"^\w+:$").unwrap();
+    static ref HEADER_PATTERN: Regex = Regex::new(r"^[a-z][a-z_]*:$").unwrap();
 }
 
 impl super::Lexer {
-    pub fn find_section_headers(&self, names: &mut Vec<String>) -> Result<(), LLFeError> {
-        // Find all matches in source
-        let mut name_captures = SECTION_PATTERN.find_iter(self.0.as_str());
+    pub fn find_section_names(&self) -> Result<Vec<String>, LLFeError> {
+        let mut names = vec![];
 
-        // Loop through matches
-        while let Some(m) = name_captures.next() {
-            // Push header name to name vec
-            let header_name = m.as_str().to_string();
-
-            if header_name.get(0..(header_name.len() - 1)) != Some(":") {
+        for line in self.0.split("\n") {
+            if !HEADER_PATTERN.is_match(line) {
                 return Err(LLFeError::LEXER(ErrorData {
-                    name: "".to_string(),
+                    name: "Invalid header".to_string(),
                     description: "".to_string(),
                     caused_by: Box::new(None)
-                }));
+                }))
             }
 
-            names.push(header_name);
+            names.push(line.replace(":", ""));
         }
 
-        Ok(())
+        Ok(names)
     }
 }

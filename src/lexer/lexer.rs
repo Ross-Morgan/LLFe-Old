@@ -39,31 +39,11 @@ impl Lexer {
     pub fn lex(&self) -> Result<Tokens, LLFeError> {
         let tokens = vec![];
 
-        let mut section_headers: Vec<String> = vec![];
-        let mut section_contents: Vec<String> = vec![];
-
-        self.find_section_headers(&mut section_headers)?;
-        self.find_section_contents(&section_headers, &mut section_contents)?;
-
         Ok(tokens)
     }
 }
 
-
-
 impl Lexer {
-    pub fn possible_header_lines(&self) -> Vec<bool> {
-        self.0.clone()
-            .split("\n")
-            .map(str::trim_end)
-            .map(|s| {
-                let trimmed = s.trim_start();
-
-                (trimmed == s) && (trimmed != "")
-            })
-            .collect::<Vec<bool>>()
-    }
-
     pub fn nth_line(&self, i: usize) -> Option<String> {
         self.0.clone()
             .split("\n")

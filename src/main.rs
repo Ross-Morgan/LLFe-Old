@@ -8,12 +8,11 @@ fn main() {
         Err(e) => panic!("{:?}", e),
     };
 
-    let mut contents = vec![];
+    // let e = lexer.find_section_contents(&vec![], &mut contents);
 
-    let e = lexer.find_section_contents(&vec![], &mut contents);
+    let e = lexer.find_section_names();
 
     println!("---");
-    println!("{:?}", contents);
     println!("{:?}", e);
     println!("---");
 }
