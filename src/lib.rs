@@ -11,7 +11,6 @@ pub mod ast;
 
 pub type Tokens = Vec<token::Token>;
 
-pub mod utils;
 
 pub mod prelude {
     pub use super::error::LLFeError;

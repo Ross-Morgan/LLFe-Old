@@ -3,10 +3,7 @@ use std::fs;
 use crate::error::{ErrorData, LLFeError};
 use crate::Tokens;
 
-
-
 pub struct Lexer(pub String);
-
 
 impl Lexer {
     pub fn lex_file(filename: &str) -> Tokens {
@@ -38,6 +35,10 @@ impl Lexer {
 impl Lexer {
     pub fn lex(&self) -> Result<Tokens, LLFeError> {
         let tokens = vec![];
+
+        for c in self.0.chars() {
+
+        }
 
         Ok(tokens)
     }
